@@ -96,8 +96,7 @@ function getStaticResponse(msg: string, trip: TripState): StaticResponse {
     return {
       content: "Xin chào! 👋 Tôi là trợ lý du lịch AI.\n\nHỏi tôi về **điểm đến**, **lịch trình**, **chi phí** — giao diện bên phải sẽ tự cập nhật!",
       actions: [
-        { label: "📅 Lập lịch Đà Nẵng 3 ngày", variant: "primary", chatAction: plan("Đà Nẵng", 3) },
-        { label: "📅 Lập lịch Hà Nội 3 ngày", variant: "primary", chatAction: plan("Hà Nội", 3) },
+        { label: "🗺️ Gợi ý điểm đến", variant: "secondary", chatAction: { type: "highlight_spot", payload: "" } }
       ],
     };
   }
@@ -216,8 +215,6 @@ const INITIAL_MSG: Message = {
   role: "assistant",
   content: "Xin chào! 👋 Tôi là trợ lý du lịch AI.\n\nHỏi tôi về **điểm đến**, **lịch trình**, **chi phí** — hoặc yêu cầu chỉnh sửa lịch trình hiện tại!",
   actions: [
-    { label: "📅 Lập lịch Đà Nẵng 3 ngày", variant: "primary", chatAction: plan("Đà Nẵng", 3) },
-    { label: "📅 Lập lịch Hà Nội 3 ngày", variant: "primary", chatAction: plan("Hà Nội", 3) },
     { label: "🗺️ Gợi ý điểm đến hot", variant: "secondary", chatAction: { type: "highlight_spot", payload: "" } },
   ],
 };

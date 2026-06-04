@@ -739,6 +739,17 @@ Context:
             if num_days <= 0:
                 num_days = 3
 
+            # Budget check
+            user_budget = parse_budget_from_message(message)
+            if user_budget is not None:
+                # Require at least 500k VND per day
+                min_required = num_days * 500000
+                if user_budget < min_required:
+                    return BackendAgentResponse(
+                        content=f"⚠️ Ngân sách {user_budget:,}đ của bạn hơi thấp cho chuyến đi {num_days} ngày tại {dest_info['name']}. Mức chi tiêu tối thiểu nên vào khoảng 500,000đ/ngày (tổng ~{min_required:,}đ). Vui lòng điều chỉnh lại ngân sách hoặc số ngày để có trải nghiệm tốt nhất nhé!",
+                        actions=[], sideEffects=[]
+                    )
+
             weather_desc = f"\nThời tiết hiện tại: {weather_str}." if weather_info else ""
             content = f"🗺️ **Kế hoạch du lịch {dest_info['name']} ({num_days} ngày)**\n\n{dest_info['description']}{weather_desc}\n\nLịch trình chi tiết đã được tối ưu hóa cho {num_days} ngày với đầy đủ các khoảng thời gian nghỉ ngơi, ẩm thực và tham quan:"
             
