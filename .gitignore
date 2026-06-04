@@ -6,4 +6,5 @@ Thumbs.db
 __pycache__/
 Meditation app design/node_modules/
 Meditation app design/dist/
-Meditation app design/backend/.env
+Meditation app design/backend/.
+Meditation app design/**/.env.example
