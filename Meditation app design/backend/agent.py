@@ -344,7 +344,8 @@ async def fetch_overpass_spots(lat: float, lon: float) -> List[Dict[str, Any]]:
     """
     try:
         async with httpx.AsyncClient(timeout=15.0) as client:
-            response = await client.post(url, content=query, headers={"Content-Type": "text/plain"})
+            headers = {"Content-Type": "text/plain", "User-Agent": "VietTravelAI/1.0 (test@example.com)"}
+            response = await client.post(url, content=query, headers=headers)
             print(f"[Debug] Overpass API status: {response.status_code}")
             if response.status_code == 200:
                 data = response.json()
@@ -394,6 +395,7 @@ def extract_destination_name(message: str, current_dest: Optional[str]) -> Optio
     match = re.search(pattern, message)
     if match:
         city = match.group(1).strip()
+        city = re.sub(r'^(?:chơi\s+ở|chơi\s+tại|chơi|thăm|ghé)\s+', '', city, flags=re.IGNORECASE).strip()
         city = re.split(r'\s+(?:3|4|5|2|ngay|tu|voi|ngan|budget|trong|the|va)\b', city, flags=re.IGNORECASE)[0].strip()
         city = re.sub(r'[?.!,;:]', '', city).strip()
         if len(city) > 2:
