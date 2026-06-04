@@ -1025,8 +1025,8 @@ async def query_llm(prompt: str, system_prompt: str) -> Optional[str]:
     # 2. Try Gemini API
     if gemini_key:
         try:
-            async with httpx.AsyncClient(timeout=15.0) as client:
-                url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={gemini_key}"
+            async with httpx.AsyncClient(timeout=90.0) as client:
+                url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={gemini_key}"
                 payload = {
                     "contents": [{
                         "parts": [
