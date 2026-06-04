@@ -376,7 +376,25 @@ async def fetch_overpass_spots(lat: float, lon: float) -> List[Dict[str, Any]]:
                 print(f"[Debug] Overpass matched {len(spots)} spots")
                 import random
                 random.shuffle(spots)
-                return spots[:25]
+                diverse_spots = []
+                counts = {"museum": 0, "temple": 0, "park": 0}
+                for spot in spots:
+                    name_l = spot["name"].lower()
+                    type_l = str(spot["type"]).lower()
+                    if "bảo tàng" in name_l or "museum" in type_l:
+                        if counts["museum"] >= 2: continue
+                        counts["museum"] += 1
+                    elif "chùa" in name_l or "đền" in name_l:
+                        if counts["temple"] >= 2: continue
+                        counts["temple"] += 1
+                    elif "công viên" in name_l or "park" in type_l:
+                        if counts["park"] >= 2: continue
+                        counts["park"] += 1
+                    
+                    diverse_spots.append(spot)
+                    if len(diverse_spots) >= 25:
+                        break
+                return diverse_spots
     except Exception as e:
         print(f"[Debug] Error querying Overpass API: {e}")
     return []
