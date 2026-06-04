@@ -3,3 +3,7 @@
 Thumbs.db
 .idea/
 .vscode/
+__pycache__/
+Meditation app design/node_modules/
+Meditation app design/dist/
+Meditation app design/backend/.env
