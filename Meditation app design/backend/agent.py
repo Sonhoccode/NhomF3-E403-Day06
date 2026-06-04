@@ -334,13 +334,19 @@ async def fetch_overpass_spots(lat: float, lon: float) -> List[Dict[str, Any]]:
     query = f"""
     [out:json][timeout:25];
     (
-      node["tourism"~"attraction|museum|viewpoint|gallery|zoo|theme_park"](around:4500,{lat},{lon});
-      way["tourism"~"attraction|museum|viewpoint|gallery|zoo|theme_park"](around:4500,{lat},{lon});
-      relation["tourism"~"attraction|museum|viewpoint|gallery|zoo|theme_park"](around:4500,{lat},{lon});
-      node["amenity"~"restaurant|cafe|fast_food|food_court"](around:3500,{lat},{lon});
-      way["amenity"~"restaurant|cafe|fast_food|food_court"](around:3500,{lat},{lon});
+      node["tourism"~"attraction|museum|viewpoint|gallery|zoo|theme_park"](around:6000,{lat},{lon});
+      way["tourism"~"attraction|museum|viewpoint|gallery|zoo|theme_park"](around:6000,{lat},{lon});
+      relation["tourism"~"attraction|museum|viewpoint|gallery|zoo|theme_park"](around:6000,{lat},{lon});
+      node["historic"](around:6000,{lat},{lon});
+      way["historic"](around:6000,{lat},{lon});
+      relation["historic"](around:6000,{lat},{lon});
+      node["leisure"~"park|nature_reserve|water_park"](around:6000,{lat},{lon});
+      way["leisure"~"park|nature_reserve|water_park"](around:6000,{lat},{lon});
+      relation["leisure"~"park|nature_reserve|water_park"](around:6000,{lat},{lon});
+      node["amenity"~"restaurant|cafe|fast_food|food_court"](around:4000,{lat},{lon});
+      way["amenity"~"restaurant|cafe|fast_food|food_court"](around:4000,{lat},{lon});
     );
-    out center 25;
+    out center 40;
     """
     try:
         async with httpx.AsyncClient(timeout=15.0) as client:

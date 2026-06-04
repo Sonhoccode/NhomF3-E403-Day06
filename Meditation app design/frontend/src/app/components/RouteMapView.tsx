@@ -165,7 +165,7 @@ export function RouteMapView({ dayLabel, destination, activities, onClose }: Rou
 
   const center = CITY_CENTER[destination] || [16.0, 108.0];
   const zoom = CITY_ZOOM[destination] || 13;
-  const delta = zoom >= 14 ? 0.025 : zoom >= 13 ? 0.05 : 0.10;
+  const delta = zoom >= 14 ? 0.02 : zoom >= 13 ? 0.04 : 0.08;
 
   const stopCoords = allStops.map((a) => getActivityCoords(a.name, destination));
   const normalizedCoords = stopCoords.map((c) => normalizeCoords(c, center, delta));
@@ -259,17 +259,18 @@ export function RouteMapView({ dayLabel, destination, activities, onClose }: Rou
 
         <div className="flex flex-1 overflow-hidden min-h-0">
           {/* Left: Map */}
-          <div className="flex-1 relative min-h-0">
-            {/* OSM iframe */}
-            <iframe
-              src={osmUrl}
-              className="w-full h-full border-0"
-              title="OpenStreetMap"
-              loading="lazy"
-            />
+          <div className="flex-1 relative min-h-0 flex items-center justify-center bg-gray-100 overflow-hidden">
+            <div className="relative aspect-square h-full max-w-full mx-auto shadow-inner bg-white">
+              {/* OSM iframe */}
+              <iframe
+                src={osmUrl}
+                className="w-full h-full border-0"
+                title="OpenStreetMap"
+                loading="lazy"
+              />
 
-            {/* Overlay: pins + route SVG */}
-            <div className="absolute inset-0 pointer-events-none">
+              {/* Overlay: pins + route SVG */}
+              <div className="absolute inset-0 pointer-events-none">
               {/* SVG route lines */}
               <svg className="absolute inset-0 w-full h-full">
                 {normalizedCoords.map((pt, i) => {
@@ -316,9 +317,10 @@ export function RouteMapView({ dayLabel, destination, activities, onClose }: Rou
               ))}
             </div>
 
-            {/* Map attribution overlay */}
-            <div className="absolute bottom-1 left-1 bg-white/80 text-xs text-gray-500 px-1.5 py-0.5 rounded pointer-events-none">
-              © OpenStreetMap
+              {/* Map attribution overlay */}
+              <div className="absolute bottom-1 left-1 bg-white/80 text-xs text-gray-500 px-1.5 py-0.5 rounded pointer-events-none">
+                © OpenStreetMap
+              </div>
             </div>
           </div>
 
