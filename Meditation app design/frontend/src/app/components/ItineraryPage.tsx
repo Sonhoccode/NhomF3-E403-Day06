@@ -573,6 +573,11 @@ export function ItineraryPage({ destination, days, onBack, pendingActivities, ch
           day.expanded = true;
         }
       });
+      
+      updated.forEach((d) => {
+        d.activities.sort((a, b) => timeToMins(a.startTime) - timeToMins(b.startTime));
+      });
+      
       return updated;
     });
     setNewlyAdded((prev) => {
@@ -587,9 +592,21 @@ export function ItineraryPage({ destination, days, onBack, pendingActivities, ch
   const toggleDay = (id: string) =>
     setDaysList((prev) => prev.map((d) => d.id === id ? { ...d, expanded: !d.expanded } : d));
 
+  const timeToMins = (t: string) => {
+    if (!t) return Number.MAX_SAFE_INTEGER;
+    const parts = t.split(":");
+    return (parseInt(parts[0]) || 0) * 60 + (parseInt(parts[1]) || 0);
+  };
+
   const addActivity = (dayId: string, act: Omit<Activity, "id">) => {
     const newAct = { ...act, id: Date.now().toString() };
-    setDaysList((prev) => prev.map((d) => d.id === dayId ? { ...d, activities: [...d.activities, newAct] } : d));
+    setDaysList((prev) => prev.map((d) => {
+      if (d.id === dayId) {
+        const sorted = [...d.activities, newAct].sort((a, b) => timeToMins(a.startTime) - timeToMins(b.startTime));
+        return { ...d, activities: sorted };
+      }
+      return d;
+    }));
     setNewlyAdded((prev) => { const n = new Set(prev); n.add(newAct.id); return n; });
     setTimeout(() => setNewlyAdded((prev) => { const n = new Set(prev); n.delete(newAct.id); return n; }), 3000);
   };
@@ -598,11 +615,13 @@ export function ItineraryPage({ destination, days, onBack, pendingActivities, ch
     setDaysList((prev) => prev.map((d) => d.id === dayId ? { ...d, activities: d.activities.filter((a) => a.id !== actId) } : d));
 
   const updateActivity = (dayId: string, updated: Activity) =>
-    setDaysList((prev) => prev.map((d) =>
-      d.id === dayId
-        ? { ...d, activities: d.activities.map((a) => a.id === updated.id ? updated : a) }
-        : d
-    ));
+    setDaysList((prev) => prev.map((d) => {
+      if (d.id === dayId) {
+        const sorted = d.activities.map((a) => a.id === updated.id ? updated : a).sort((a, b) => timeToMins(a.startTime) - timeToMins(b.startTime));
+        return { ...d, activities: sorted };
+      }
+      return d;
+    }));
 
   const reorderActivities = (dayId: string, fromIdx: number, toIdx: number) => {
     setDaysList((prev) => prev.map((d) => {
