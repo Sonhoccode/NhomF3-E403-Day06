@@ -591,7 +591,8 @@ Live API & Local Database Context:
 Instruction:
 - You must generate a complete day-by-day plan for the requested days (total: {trip.days if (trip.days and trip.days > 0) else '3'} days).
 - Do not group everything on Day 1. Distribute activities evenly across Day 1, Day 2, etc. (using the "day" field in add_activity).
-- For each day, you MUST include dining sessions (breakfast, lunch, dinner) and coffee or rest breaks, as well as sightseeing activities.
+- For each day, you MUST include dining sessions (breakfast, lunch, dinner) and sightseeing activities.
+- CRITICAL: To save tokens, MAXIMUM 4 activities per day! DO NOT include "transport" or "di chuyển" activities.
 - The "day" field in "add_activity" payloads is mandatory (1-indexed).
 - Return "start_planning" first in sideEffects with "clearDefaults": true and "popularSpots" listing attractions from the database/Overpass context, followed by "add_activity" actions.
 - CRITICAL: Do NOT put every "add_activity" into the "actions" array! The "actions" array is only for 1 or 2 quick-reply UI buttons (e.g., "Sửa lịch trình"). All itinerary events MUST go into the "sideEffects" array!
@@ -1012,7 +1013,8 @@ async def query_llm(prompt: str, system_prompt: str) -> Optional[str]:
                         {"role": "user", "content": prompt}
                     ],
                     "temperature": 0.2,
-                    "num_predict": 4096,
+                    "num_predict": 8192,
+                    "num_ctx": 8192,
                     "response_format": {"type": "json_object"}
                 }
             )
