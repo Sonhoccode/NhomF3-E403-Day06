@@ -5,9 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "dev": "node scripts/dev.mjs",
-    "dev:client": "vite",
-    "dev:server": "node server/index.mjs"
+    "dev": "vite"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",
