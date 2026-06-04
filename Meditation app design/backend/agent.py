@@ -625,6 +625,7 @@ Instruction:
   4. Tham quan buổi chiều (type: "sightseeing", time: ~14:00)
   5. Ăn tối (type: "food", time: ~18:00)
 - CRITICAL: DO NOT include "transport" or "di chuyển" activities. You MUST provide exactly these 5 activities for each day.
+- CRITICAL: Make the itinerary DIVERSE! Limit to a MAXIMUM of 1 museum per trip. Prioritize outdoor parks, famous streets, historic monuments, lakes, local markets, and entertainment areas.
 - The "day" field in "add_activity" payloads is mandatory (1-indexed).
 - Return "start_planning" first in sideEffects with "clearDefaults": true and "popularSpots" listing attractions from the database/Overpass context, followed by "add_activity" actions.
 - CRITICAL: Do NOT put every "add_activity" into the "actions" array! The "actions" array is only for 1 or 2 quick-reply UI buttons (e.g., "Sửa lịch trình"). All itinerary events MUST go into the "sideEffects" array!
