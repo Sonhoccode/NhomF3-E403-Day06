@@ -594,6 +594,7 @@ Instruction:
 - For each day, you MUST include dining sessions (breakfast, lunch, dinner) and coffee or rest breaks, as well as sightseeing activities.
 - The "day" field in "add_activity" payloads is mandatory (1-indexed).
 - Return "start_planning" first in sideEffects with "clearDefaults": true and "popularSpots" listing attractions from the database/Overpass context, followed by "add_activity" actions.
+- CRITICAL: Do NOT put every "add_activity" into the "actions" array! The "actions" array is only for 1 or 2 quick-reply UI buttons (e.g., "Sửa lịch trình"). All itinerary events MUST go into the "sideEffects" array!
 - Output ONLY the JSON block. Do not include markdown code fence formatting (```json) inside the JSON string.
 """
     else:
@@ -1011,6 +1012,7 @@ async def query_llm(prompt: str, system_prompt: str) -> Optional[str]:
                         {"role": "user", "content": prompt}
                     ],
                     "temperature": 0.2,
+                    "num_predict": 4096,
                     "response_format": {"type": "json_object"}
                 }
             )
