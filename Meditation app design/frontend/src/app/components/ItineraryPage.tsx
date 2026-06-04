@@ -513,7 +513,8 @@ export function ItineraryPage({ destination, days, onBack, pendingActivities, ch
       setDynamicSpots(initialPopularSpots);
       return;
     }
-    fetch(`/api/spots?destination=${encodeURIComponent(destination)}`)
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || "";
+    fetch(`${backendUrl}/api/spots?destination=${encodeURIComponent(destination)}`)
       .then((r) => r.json())
       .then((data: { spots: Array<{ name: string }> }) => {
         if (data.spots?.length) {
