@@ -599,8 +599,8 @@ Live API & Local Database Context:
 Instruction:
 - You must generate a complete day-by-day plan for the requested days (total: {trip.days if (trip.days and trip.days > 0) else '3'} days).
 - Do not group everything on Day 1. Distribute activities evenly across Day 1, Day 2, etc. (using the "day" field in add_activity).
-- For each day, you MUST include dining sessions (breakfast, lunch, dinner) and sightseeing activities.
-- CRITICAL: To save tokens, MAXIMUM 4 activities per day! DO NOT include "transport" or "di chuyển" activities.
+- For each day, you MUST include exactly 3 meals (breakfast, lunch, dinner) and at least 2-3 sightseeing activities.
+- CRITICAL: DO NOT include "transport" or "di chuyển" activities. Limit to 5-6 activities per day.
 - The "day" field in "add_activity" payloads is mandatory (1-indexed).
 - Return "start_planning" first in sideEffects with "clearDefaults": true and "popularSpots" listing attractions from the database/Overpass context, followed by "add_activity" actions.
 - CRITICAL: Do NOT put every "add_activity" into the "actions" array! The "actions" array is only for 1 or 2 quick-reply UI buttons (e.g., "Sửa lịch trình"). All itinerary events MUST go into the "sideEffects" array!
