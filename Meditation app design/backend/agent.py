@@ -374,7 +374,9 @@ async def fetch_overpass_spots(lat: float, lon: float) -> List[Dict[str, Any]]:
                         "address": tags.get("addr:full") or tags.get("addr:street") or tags.get("addr:place") or tags.get("contact:address") or ""
                     })
                 print(f"[Debug] Overpass matched {len(spots)} spots")
-                return spots[:15]
+                import random
+                random.shuffle(spots)
+                return spots[:25]
     except Exception as e:
         print(f"[Debug] Error querying Overpass API: {e}")
     return []
