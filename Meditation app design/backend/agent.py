@@ -628,9 +628,10 @@ Context:
     if llm_output:
         try:
             cleaned = llm_output.strip()
-            if cleaned.startswith("```"):
-                cleaned = re.sub(r'^```(?:json)?\s*', '', cleaned)
-                cleaned = re.sub(r'\s*```$', '', cleaned)
+            # Try to extract just the JSON part if there is markdown or conversational padding
+            match = re.search(r'(\{.*\})', cleaned, re.DOTALL)
+            if match:
+                cleaned = match.group(1)
                 
             data = json.loads(cleaned)
             actions = []
@@ -1003,7 +1004,7 @@ async def query_llm(prompt: str, system_prompt: str) -> Optional[str]:
     
     # 1. Try Ollama (Local Qwen)
     try:
-        async with httpx.AsyncClient(timeout=15.0) as client:
+        async with httpx.AsyncClient(timeout=90.0) as client:
             response = await client.post(
                 f"{ollama_url}/chat/completions",
                 json={
