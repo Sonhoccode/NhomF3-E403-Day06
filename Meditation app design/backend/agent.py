@@ -464,10 +464,18 @@ async def run_travel_agent_llm(message: str, trip: TripState) -> BackendAgentRes
             # Fetch local mock spots
             local_spots = fetch_local_mock_spots(dest_info["name"])
 
-    # Calculate budget threshold
+    # Calculate budget threshold globally
     extracted_budget = parse_budget_from_message(message)
     if extracted_budget is not None and dest_info:
-        # Check standard cost logic
+        # Determine number of days
+        num_days = extract_days(message, trip.days if (trip.days and trip.days > 0) else dest_info.get("days", 3))
+        if num_days <= 0:
+            num_days = 3
+            
+        # Require at least 500k VND per day
+        min_required = num_days * 500000
+        
+        # Check standard ticket cost logic for specific locations (extra validation)
         estimated_min_cost = 200000  # Default minimum cost
         if "Đà Nẵng" in dest_info["name"]:
             estimated_min_cost = 850000
@@ -478,9 +486,9 @@ async def run_travel_agent_llm(message: str, trip: TripState) -> BackendAgentRes
         elif "Fansipan" in dest_info["name"] or "Sa Pa" in dest_info["name"]:
             estimated_min_cost = 800000
             
-        if estimated_min_cost > extracted_budget * 1.1:
+        if extracted_budget < min_required or estimated_min_cost > extracted_budget * 1.1:
             return BackendAgentResponse(
-                content=f"⚠️ **Cảnh báo ngân sách quá thấp!**\n\nBạn đặt ngân sách là **{extracted_budget:,}đ**, nhưng riêng chi phí vé các địa điểm nổi tiếng tại **{dest_info['name']}** đã ước tính khoảng **{estimated_min_cost:,}đ** (chưa tính lưu trú, ăn uống và đi lại).\n\nVui lòng tăng ngân sách hoặc điều chỉnh lịch trình phù hợp để tiếp tục.",
+                content=f"⚠️ **Cảnh báo ngân sách quá thấp!**\n\nNgân sách {extracted_budget:,}đ của bạn không phù hợp cho chuyến đi {num_days} ngày tại {dest_info['name']}. Mức chi tiêu tối thiểu nên vào khoảng 500,000đ/ngày (tổng ~{min_required:,}đ). Riêng vé tham quan các điểm nổi tiếng đã tốn một khoản đáng kể.\n\nVui lòng tăng ngân sách hoặc giảm số ngày để tôi có thể lập lịch trình khả thi nhé!",
                 actions=[],
                 sideEffects=[]
             )
@@ -739,17 +747,6 @@ Context:
             num_days = extract_days(message, trip.days if (trip.days and trip.days > 0) else dest_info["days"])
             if num_days <= 0:
                 num_days = 3
-
-            # Budget check
-            user_budget = parse_budget_from_message(message)
-            if user_budget is not None:
-                # Require at least 500k VND per day
-                min_required = num_days * 500000
-                if user_budget < min_required:
-                    return BackendAgentResponse(
-                        content=f"⚠️ Ngân sách {user_budget:,}đ của bạn hơi thấp cho chuyến đi {num_days} ngày tại {dest_info['name']}. Mức chi tiêu tối thiểu nên vào khoảng 500,000đ/ngày (tổng ~{min_required:,}đ). Vui lòng điều chỉnh lại ngân sách hoặc số ngày để có trải nghiệm tốt nhất nhé!",
-                        actions=[], sideEffects=[]
-                    )
 
             weather_desc = f"\nThời tiết hiện tại: {weather_str}." if weather_info else ""
             content = f"🗺️ **Kế hoạch du lịch {dest_info['name']} ({num_days} ngày)**\n\n{dest_info['description']}{weather_desc}\n\nLịch trình chi tiết đã được tối ưu hóa cho {num_days} ngày với đầy đủ các khoảng thời gian nghỉ ngơi, ẩm thực và tham quan:"
